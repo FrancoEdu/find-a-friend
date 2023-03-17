@@ -1,8 +1,9 @@
 import { Router } from './routes'
 import { BrowserRouter } from 'react-router-dom'
 import GlobalStyles from './styles/global'
+import { Home } from './pages/Home'
 
-function App() {
+export function App() {
   return (
     <>
       <BrowserRouter>
@@ -12,5 +13,3 @@ function App() {
     </>
   )
 }
-
-export default App
