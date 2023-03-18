@@ -2,36 +2,82 @@ import icon from '../../assets/icons/logo.svg'
 import search from '../../assets/icons/search.svg'
 import groupPet from '../../assets/icons/OBJECTS.svg'
 import { Container, HomePage, Title, Medium, Footer} from './styles'
-import { useFetch } from '@/hooks/useFetch'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { api } from '@/services/http'
 
-type UF = {
-  id: number,
-  sigla: string,
-  nome: string,
-  regiao: {
-    id: number,
-    sigla: string,
-    nome: string,
-  }
+interface ISelectOptions {
+  value: string | number
+  label: string
 }
+
+interface IState {
+  nome: string
+  sigla: string
+}
+
+interface ICity {
+  name: string
+  code: string
+}
+
+interface IResponseState {
+  states: IState[]
+}
+
+interface IResponseCity {
+  citys: ICity[]
+}
+
 
 export function Home() {
   
-  const { data: estados } = useFetch<UF[]>("http://localhost:3333/location/states")
-  console.log(estados)
+  const [state, setState] = useState('')
+  const [city, setCity] = useState('')
+  const [states, setStates] = useState<ISelectOptions[]>([])
+  const [citys, setCitys] = useState<ISelectOptions[]>([])
+
+  const navigate = useNavigate()
 
   function handleSearchPets() {
-    // TO DO
+    const queryParams = new URLSearchParams({
+      state,
+      city,
+    })
+    navigate(`/map?${queryParams.toString()}`)
   }
 
-  function handleChangeState() {
-    // TO DO
+  async function handleChangeState(e: any) {
+    const newState = e.target.value
+    setState(newState)
+    const { data } = await api.get<IResponseCity>(`/location/citys/${newState}`)
+    const dataMapped = data.citys
+      .map((city) => ({
+        label: city.name,
+        value: city.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+    setCitys(dataMapped)
   }
 
-  function handleChangeCity() {
-    // TO DO
+  function handleChangeCity(e: any) {
+    setCity(e.target.value)
   }
+
+
+  useEffect(() => {
+    const loadStates = async () => {
+      const { data } = await api.get<IResponseState>('/location/states')
+      const dataMapped = data.states
+        .map((state) => ({
+          label: state.sigla,
+          value: state.sigla,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label))
+      setStates(dataMapped)
+    }
+    loadStates()
+  }, [])
 
   return( 
     <Container>
@@ -56,18 +102,11 @@ export function Home() {
           </p>
           <div>
             Busque um amigo: 
-            <select className='state' placeholder='UF'>
-              {/* {
-                estados?.map(uf =>{
-                  return(
-                    <option key={uf.id}>{uf.sigla}</option>
-                  )
-                })
-              } */}
+            <select className='state' name="UF" label="" options={states} onChange={handleChangeState}>
             </select>
-            <select className='city' placeholder='Estado'>
+            <select className='city' name="Cidade" label="" options={citys} onChange={handleChangeCity}>
             </select>
-            <button type="submit">
+            <button type="submit" onClick={handleSearchPets} disabled={!state || !city}>
               <img src={search} alt=""/>
             </button>
           </div>
