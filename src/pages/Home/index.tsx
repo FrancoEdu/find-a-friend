@@ -19,13 +19,14 @@ type UF = {
 export function Home() {
   
   const { data: estados } = useFetch<UF[]>("http://localhost:3333/location/states")
+  console.log(estados)
 
   function handleSearchPets() {
     // TO DO
   }
 
   function handleChangeState() {
-
+    // TO DO
   }
 
   function handleChangeCity() {
@@ -55,17 +56,16 @@ export function Home() {
           </p>
           <div>
             Busque um amigo: 
-            <select className='state'>
-              {
+            <select className='state' placeholder='UF'>
+              {/* {
                 estados?.map(uf =>{
                   return(
                     <option key={uf.id}>{uf.sigla}</option>
                   )
                 })
-              }
+              } */}
             </select>
-            <select className='city'>
-              <option value="">Estado</option>
+            <select className='city' placeholder='Estado'>
             </select>
             <button type="submit">
               <img src={search} alt=""/>
