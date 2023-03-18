@@ -1,14 +1,31 @@
 import icon from '../../assets/icons/logo.svg'
+import search from '../../assets/icons/search.svg'
 import groupPet from '../../assets/icons/OBJECTS.svg'
 import { Container, HomePage, Title, Medium, Footer} from './styles'
+import { useFetch } from '@/hooks/useFetch'
+import { useState } from 'react'
+
+type UF = {
+  id: number,
+  sigla: string,
+  nome: string,
+  regiao: {
+    id: number,
+    sigla: string,
+    nome: string,
+  }
+}
 
 export function Home() {
+  
+  const { data: estados } = useFetch<UF[]>("http://localhost:3333/location/states")
+
   function handleSearchPets() {
     // TO DO
   }
 
   function handleChangeState() {
-    // TO DO
+
   }
 
   function handleChangeCity() {
@@ -38,6 +55,21 @@ export function Home() {
           </p>
           <div>
             Busque um amigo: 
+            <select className='state'>
+              {
+                estados?.map(uf =>{
+                  return(
+                    <option key={uf.id}>{uf.sigla}</option>
+                  )
+                })
+              }
+            </select>
+            <select className='city'>
+              <option value="">Estado</option>
+            </select>
+            <button type="submit">
+              <img src={search} alt=""/>
+            </button>
           </div>
         </Footer>
       </HomePage>

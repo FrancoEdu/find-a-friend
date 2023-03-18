@@ -46,6 +46,48 @@ export const Footer = styled.div`
     p{
         font-size: 20px;
     }
+
+    div{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+
+        .state{
+            height: 3.5rem;
+            width: 3.5rem;
+            border-radius: 8px;
+            text-align: center;
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .city{
+            height: 3.5rem;
+            width: 15rem;
+            border-radius: 8px;
+            text-align: center;
+            background: #E44449;
+            color: white;
+            border: 0;
+            font-weight: 700;
+            font-size: 18px;
+            border: 0;
+        }
+
+        button{
+            height: 3.5rem;
+            width: 3.5rem;
+            border-radius: 15px;
+            align-items: center;
+            text-align: center;
+            border: 0;
+            background: #F4D35E;
+            gap: 5px;
+        }
+    }
 `
 
 
