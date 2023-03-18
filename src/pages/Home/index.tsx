@@ -5,6 +5,7 @@ import { Container, HomePage, Title, Medium, Footer} from './styles'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '@/services/http'
+import { Select } from '@/components/Select'
 
 interface ISelectOptions {
   value: string | number
@@ -102,10 +103,10 @@ export function Home() {
           </p>
           <div>
             Busque um amigo: 
-            <select className='state' name="UF" label="" options={states} onChange={handleChangeState}>
-            </select>
-            <select className='city' name="Cidade" label="" options={citys} onChange={handleChangeCity}>
-            </select>
+            <Select className='state' name="UF" label="" options={states} onChange={handleChangeState}>
+            </Select>
+            <Select className='city' name="Cidade" label="" options={citys} onChange={handleChangeCity}>
+            </Select>
             <button type="submit" onClick={handleSearchPets} disabled={!state || !city}>
               <img src={search} alt=""/>
             </button>
