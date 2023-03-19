@@ -3,7 +3,6 @@ import search from '../../assets/icons/search.svg'
 import groupPet from '../../assets/icons/OBJECTS.svg'
 import { Container, HomePage, Title, Medium, Footer} from './styles'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { api } from '@/services/http'
 import { Select } from '@/components/Select'
 
@@ -12,24 +11,25 @@ interface ISelectOptions {
   label: string
 }
 
-interface IState {
-  nome: string
-  sigla: string
+interface UF{
+  states: [{
+    id: number,
+    sigla: string,
+    nome: string,
+    regiao: {
+      id: number,
+      sigla: string,
+      nome: string,
+	  }
+  }]
 }
 
-interface ICity {
-  name: string
-  code: string
+interface CITYS{
+  citys: [{
+    name: string,
+    code: string,
+  }]
 }
-
-interface IResponseState {
-  states: IState[]
-}
-
-interface IResponseCity {
-  citys: ICity[]
-}
-
 
 export function Home() {
   
@@ -38,46 +38,18 @@ export function Home() {
   const [states, setStates] = useState<ISelectOptions[]>([])
   const [citys, setCitys] = useState<ISelectOptions[]>([])
 
-  const navigate = useNavigate()
-
-  function handleSearchPets() {
-    const queryParams = new URLSearchParams({
-      state,
-      city,
-    })
-    navigate(`/map?${queryParams.toString()}`)
+  function handleSearchPets(){
   }
 
-  async function handleChangeState(e: any) {
-    const newState = e.target.value
-    setState(newState)
-    const { data } = await api.get<IResponseCity>(`/location/citys/${newState}`)
-    const dataMapped = data.citys
-      .map((city) => ({
-        label: city.name,
-        value: city.name,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label))
-    setCitys(dataMapped)
+  async function handleChangeState(){
   }
 
-  function handleChangeCity(e: any) {
-    setCity(e.target.value)
+  function handleChangeCity(){
   }
 
 
   useEffect(() => {
-    const loadStates = async () => {
-      const { data } = await api.get<IResponseState>('/location/states')
-      const dataMapped = data.states
-        .map((state) => ({
-          label: state.sigla,
-          value: state.sigla,
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label))
-      setStates(dataMapped)
-    }
-    loadStates()
+    
   }, [])
 
   return( 
