@@ -5,6 +5,7 @@ import { Container, HomePage, Title, Medium, Footer} from './styles'
 import { useEffect, useState } from 'react'
 import { api } from '@/services/http'
 import { Select } from '@/components/Select'
+import { useNavigate } from 'react-router-dom'
 
 interface ISelectOptions {
   value: string | number
@@ -12,23 +13,27 @@ interface ISelectOptions {
 }
 
 interface UF{
-  states: [{
+  id: number,
+  sigla: string,
+  nome: string,
+  regiao: {
     id: number,
     sigla: string,
     nome: string,
-    regiao: {
-      id: number,
-      sigla: string,
-      nome: string,
-	  }
-  }]
+  }
+}
+
+interface IUF{
+  states: UF[]
 }
 
 interface CITYS{
-  citys: [{
-    name: string,
-    code: string,
-  }]
+  name: string,
+  code: string,
+}
+
+interface ICITYS{
+  citys: CITYS[]
 }
 
 export function Home() {
@@ -38,18 +43,44 @@ export function Home() {
   const [states, setStates] = useState<ISelectOptions[]>([])
   const [citys, setCitys] = useState<ISelectOptions[]>([])
 
-  function handleSearchPets(){
+  const navigate = useNavigate()
+
+  function handleSearchPets() {
+    const queryParams = new URLSearchParams({
+      state,
+      city,
+    })
+    navigate(`/map?${queryParams.toString()}`)
   }
 
-  async function handleChangeState(){
+  async function handleChangeState(e: any){
+    const newState = e.target.value
+    setState(newState)
+    const { data } = await api.get<ICITYS>(`/location/citys/${newState}`)
+    const dataMapped = data.citys.map((city) => ({
+      label: city.name,
+      value: city.name,
+    })).sort((a,b) => a.label.localeCompare(b.label))
+
+    setCitys(dataMapped)
   }
 
-  function handleChangeCity(){
+  function handleChangeCity(e: any){
+    setCity(e.target.value)
   }
 
 
   useEffect(() => {
-    
+    const loadStates =async () => {
+      const { data } = await api.get<IUF>('/location/states') //consumindo a rota
+      const dataMapped = data.states
+        .map((state) => ({
+          label: state.sigla,
+          value: state.sigla
+        })).sort((a,b) => a.label.localeCompare(b.label))
+        setStates(dataMapped)
+    }
+    loadStates()
   }, [])
 
   return( 
